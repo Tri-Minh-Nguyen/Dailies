@@ -19,22 +19,19 @@ def retrieve_weather(w_key):
     CITY = "Minneapolis"
     url = WEATHER_URL + "appid=" + WEATHER_KEY + "&q=" + CITY 
 
-    w = requests.get(url).json()
-    weather = {}
-    weather['temp'] = int(w['main']['temp'] * 9/5 - 459.67)
-    weather['description'] = w['weather'][0]['description']
-    return weather
+    weather = requests.get(url).json()
+    temp = {}
+    temp['temp'] = int(weather['main']['temp'] * 9/5 - 459.67)
+    temp['description'] = weather['weather'][0]['description']
+    return temp
 
 def retrieve_canvas(c_key):
     CANVAS_URL = "https://canvas.umn.edu/"
     CANVAS_KEY = c_key
 
-
     canvas = Canvas(CANVAS_URL, CANVAS_KEY)
-
     today = datetime.now().strftime("%Y-%m-%d")
     timezone = pytz.timezone("US/Central") 
-
     upcoming = []
     urgent = []
 
@@ -42,7 +39,6 @@ def retrieve_canvas(c_key):
         temp = {}
         temp['title'] = event['title']
         temp['due'] = parser.parse(event['end_at']).strftime("%Y-%m-%d")
-        # take end_at and parse it into central time united states
         temp['time'] = parser.parse(event['end_at']).astimezone(tz=timezone).strftime("%I:%M %p")
         temp['link'] = event['html_url']
         if temp['due'] == today or due_today(temp['due'],temp['time']):
@@ -79,7 +75,6 @@ def send_text(message, a_sid, a_token, m_sid, number):
                                 body=message,
                                 to=number
                             ) 
-    
     print(message.sid)
 
 def due_today(date,time):
