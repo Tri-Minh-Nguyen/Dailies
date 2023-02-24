@@ -11,7 +11,7 @@ def get_key():
     with open("authkey.txt", "r") as f:
         for line in f:
             keys.append(line.strip())
-    return keys[0], keys[1], keys[2], keys[3], keys[4]
+    return keys[0], keys[1], keys[2], keys[3], keys[4], keys[5]
 
 def retrieve_weather(w_key):
     WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather?"
@@ -69,7 +69,7 @@ def to_string(urgent, upcoming, weather):
     return message
 
 
-def send_text(message, a_sid, a_token, m_sid):
+def send_text(message, a_sid, a_token, m_sid, number):
     account_sid = a_sid 
     auth_token = a_token
     client = Client(account_sid, auth_token) 
@@ -77,7 +77,7 @@ def send_text(message, a_sid, a_token, m_sid):
     message = client.messages.create(  
                                 messaging_service_sid=m_sid,
                                 body=message,
-                                to='+16124422064' 
+                                to=number
                             ) 
     
     print(message.sid)
@@ -89,8 +89,8 @@ def due_today(date,time):
     return False
 
 if __name__ == "__main__":
-    w_key, c_key, account_sid, auth_token, m_sid = get_key()
+    w_key, c_key, account_sid, auth_token, m_sid, number = get_key()
     weather = retrieve_weather(w_key)
     urgent, upcoming = retrieve_canvas(c_key)
     message = to_string(urgent, upcoming, weather)
-    send_text(message, account_sid, auth_token, m_sid)
+    send_text(message, account_sid, auth_token, m_sid, number)
