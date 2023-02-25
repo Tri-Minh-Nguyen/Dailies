@@ -38,7 +38,7 @@ def retrieve_canvas(c_key):
     for event in canvas.get_upcoming_events():
         temp = {}
         temp['title'] = event['title']
-        temp['due'] = parser.parse(event['end_at']).strftime("%Y-%m-%d")
+        temp['due'] = parser.parse(event['end_at']).astimezone(tz=timezone).strftime("%Y-%m-%d")
         temp['time'] = parser.parse(event['end_at']).astimezone(tz=timezone).strftime("%I:%M %p")
         temp['link'] = event['html_url']
         if temp['due'] == today or due_today(temp['due'],temp['time']):
@@ -52,7 +52,8 @@ def to_string(urgent, upcoming, weather):
     message += "Weather: \n"
     message += "Temperature: " + str(weather['temp']) + " degrees F \n"
     message += weather['description'] + "\n\n"
-    message += "Urgent: \n"
+    if len(urgent) != 0:
+        message += "Urgent: \n"
     for event in urgent:
         message += event['title'] + "\n"
         message += event['due'] + " " + event['time'] + "\n"
